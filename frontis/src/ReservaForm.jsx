@@ -1,6 +1,7 @@
+
 import { useEffect, useState } from "react";
 
-const ESTADOS = [
+const ESTADOS_RESERVA = [
   "RESERVADO",
   "SINRESERVAR",
   "COMPLETADAS",
@@ -8,8 +9,8 @@ const ESTADOS = [
   "SINASISTENCIA",
 ];
 
-function ReservaForm({ onSubmit, onCancel, reservaInicial }) {
-  const [formData, setFormData] = useState({
+function crearEstadoInicial() {
+  return {
     nombrePersona: "",
     Telefono: "",
     FechaReserva: "",
@@ -18,11 +19,15 @@ function ReservaForm({ onSubmit, onCancel, reservaInicial }) {
     Estado: "RESERVADO",
     Nmesa: "",
     observacion: "",
-  });
+  };
+}
+
+function ReservaForm({ onSubmit, onCancel, reservaInicial }) {
+  const [datos, setDatos] = useState(crearEstadoInicial);
 
   useEffect(() => {
     if (reservaInicial) {
-      setFormData({
+      setDatos({
         nombrePersona: reservaInicial.nombrePersona ?? "",
         Telefono: reservaInicial.Telefono ?? "",
         FechaReserva: reservaInicial.FechaReserva ?? "",
@@ -32,15 +37,17 @@ function ReservaForm({ onSubmit, onCancel, reservaInicial }) {
         Nmesa: reservaInicial.Nmesa ?? "",
         observacion: reservaInicial.observacion ?? "",
       });
+    } else {
+      setDatos(crearEstadoInicial());
     }
   }, [reservaInicial]);
 
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
+  function cambiarCampo(e) {
+    const { name, value, type } = e.target;
+    setDatos((prev) => ({
       ...prev,
       [name]:
-        name === "CantidadPersonas" || name === "Nmesa"
+        type === "number"
           ? value === ""
             ? ""
             : Number(value)
@@ -48,112 +55,131 @@ function ReservaForm({ onSubmit, onCancel, reservaInicial }) {
     }));
   }
 
-  function handleSubmit(e) {
+  function enviar(e) {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit(datos);
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Nombre de la persona</label>
+    <form className="form" onSubmit={enviar}>
+      <div className="form-group">
+        <span className="form-label">Nombre de la persona</span>
         <input
+          className="form-input"
           name="nombrePersona"
-          value={formData.nombrePersona}
-          onChange={handleChange}
+          value={datos.nombrePersona}
+          onChange={cambiarCampo}
+          placeholder="Ej: Juan Pérez"
           required
         />
       </div>
 
-      <div>
-        <label>Teléfono</label>
+      <div className="form-group">
+        <span className="form-label">Teléfono</span>
         <input
+          className="form-input"
           name="Telefono"
-          value={formData.Telefono}
-          onChange={handleChange}
+          value={datos.Telefono}
+          onChange={cambiarCampo}
+          placeholder="Ej: +56 9 1234 5678"
           required
         />
       </div>
 
-      <div>
-        <label>Fecha reserva</label>
+      <div className="form-group">
+        <span className="form-label">Fecha de la reserva</span>
         <input
+          className="form-input"
           type="date"
           name="FechaReserva"
-          value={formData.FechaReserva}
-          onChange={handleChange}
+          value={datos.FechaReserva}
+          onChange={cambiarCampo}
           required
         />
       </div>
 
-      <div>
-        <label>Hora reserva</label>
+      <div className="form-group">
+        <span className="form-label">Hora de la reserva</span>
         <input
+          className="form-input"
           type="time"
           name="horaReserva"
-          value={formData.horaReserva}
-          onChange={handleChange}
+          value={datos.horaReserva}
+          onChange={cambiarCampo}
           required
         />
       </div>
 
-      <div>
-        <label>Cantidad personas</label>
+      <div className="form-group">
+        <span className="form-label">Cantidad de personas</span>
         <input
+          className="form-input"
           type="number"
           name="CantidadPersonas"
           min={1}
           max={15}
-          value={formData.CantidadPersonas}
-          onChange={handleChange}
+          value={datos.CantidadPersonas}
+          onChange={cambiarCampo}
           required
         />
       </div>
 
-      <div>
-        <label>Estado</label>
+      <div className="form-group">
+        <span className="form-label">Estado</span>
         <select
+          className="form-select"
           name="Estado"
-          value={formData.Estado}
-          onChange={handleChange}
+          value={datos.Estado}
+          onChange={cambiarCampo}
           required
         >
-          {ESTADOS.map((e) => (
-            <option key={e} value={e}>
-              {e}
+          {ESTADOS_RESERVA.map((op) => (
+            <option key={op} value={op}>
+              {op}
             </option>
           ))}
         </select>
       </div>
 
-      <div>
-        <label>Mesa (ID)</label>
+      <div className="form-group">
+        <span className="form-label">Mesa (ID)</span>
         <input
+          className="form-input"
           type="number"
           name="Nmesa"
-          value={formData.Nmesa}
-          onChange={handleChange}
+          value={datos.Nmesa}
+          onChange={cambiarCampo}
+          placeholder="Ej: 1"
           required
         />
       </div>
 
-      <div>
-        <label>Observación</label>
+      <div className="form-group">
+        <span className="form-label">Observación</span>
         <textarea
+          className="form-textarea"
           name="observacion"
-          value={formData.observacion}
-          onChange={handleChange}
+          value={datos.observacion}
+          onChange={cambiarCampo}
+          placeholder="Comentarios adicionales..."
         />
       </div>
 
-      <button type="submit">
-        {reservaInicial ? "Actualizar" : "Crear"}
-      </button>
-      {onCancel && (
-        <button type="button" onClick={onCancel}>
-          Cancelar
+      <div className="form-actions">
+        <button type="submit" className="btn btn-primary">
+          {reservaInicial ? "Guardar cambios" : "Crear reserva"}
         </button>
-      )}
+
+        {onCancel && (
+          <button
+            type="button"
+            className="btn btn-outline"
+            onClick={onCancel}
+          >
+            Cancelar
+          </button>
+        )}
+      </div>
     </form>
   );
 }

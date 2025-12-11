@@ -23,9 +23,9 @@ urlpatterns = [
     path('admin/', admin.site.urls), 
     path('', index, name="home"),
     path('ReservaApi/', ReservaList.as_view()),
-    path('ReservaApi/<int:pk>', ReservaDetalle.as_view()),
+    path('ReservaApi/<int:pk>/', ReservaDetalle.as_view()),
     path('Reserva/', ListaReserva, name="listaReservas"),
-    path('Reserva/AgregarReserva', AgregarReserva, name='AgregarReserva'),
+    path('Reserva/AgregarReserva/', AgregarReserva, name='AgregarReserva'),
     path('reservas/actualizar/<int:id>/', actuReserva, name='actuReserva'),
     path('reservas/eliminar/<int:id>/', DelReserva, name='DelReserva')
 ]
