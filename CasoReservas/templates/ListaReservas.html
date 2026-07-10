@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<h1>Listado de reservas</h1>
+<a href="{% url 'AgregarReserva' %}">Agregar reserva</a>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Teléfono</th>
+        <th>Fecha</th>
+        <th>Hora</th>
+        <th>Cantidad</th>
+        <th>Estado</th>
+        <th>Mesa</th>
+        <th>Acciones</th>
+    </tr>
+    {% for r in reservas %}
+    <tr>
+        <td>{{ r.id }}</td>
+        <td>{{ r.nombrePersona }}</td>
+        <td>{{ r.Telefono }}</td>
+        <td>{{ r.FechaReserva }}</td>
+        <td>{{ r.horaReserva }}</td>
+        <td>{{ r.CantidadPersonas }}</td>
+        <td>{{ r.Estado }}</td>
+        <td>{{ r.Nmesa.numero }}</td>
+        <td>
+            <a href="{% url 'actuReserva' r.id %}">Editar</a> 
+            <a href="{% url 'DelReserva' r.id %}">Eliminar</a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="9">No hay reservas.</td>
+    </tr>
+    {% endfor %}
+</table>
+<a href="{% url 'home' %}">Volver</a>
+
+</body>
+</html>
